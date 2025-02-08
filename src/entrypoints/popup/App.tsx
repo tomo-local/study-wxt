@@ -14,6 +14,7 @@ import {
 const Popup = () => {
   const [list, setList] = useState<ListContext[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isComposing, setIsComposing] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const listRef = useRef<HTMLUListElement>(null);
 
@@ -159,9 +160,7 @@ const Popup = () => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log("========", e);
-    // コマンドキーとの組み合わせを考慮
-    if (e.key === "Enter" && selectedIndex >= 0) {
+    if (e.key === "Enter" && selectedIndex >= 0 && !isComposing) {
       const item = list[selectedIndex];
       if (item.type === "tab") {
         chrome.tabs.update(item.id as number, { active: true });
@@ -196,6 +195,8 @@ const Popup = () => {
           value={searchTerm}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
+          onCompositionStart={() => setIsComposing(true)}
+          onCompositionEnd={() => setIsComposing(false)}
         />
       </div>
       <div className="mt-4 bg-gray-800 rounded">
