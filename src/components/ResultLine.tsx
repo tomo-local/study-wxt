@@ -6,6 +6,10 @@ import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircle
 import { ListContext } from "@/machine/searchList";
 
 function LeftIcon({ item }: { item: ListContext }) {
+  const searchFavicon = (url: string) => {
+    return `http://www.google.com/s2/favicons?domain=${url}`;
+  };
+
   switch (item.type) {
     case "tab":
       return item.icon ? (
@@ -15,11 +19,7 @@ function LeftIcon({ item }: { item: ListContext }) {
       );
     case "history":
       return (
-        <img
-          src={`http://www.google.com/s2/favicons?domain=${item.url}`}
-          alt=""
-          className="size-5"
-        />
+        <img src={searchFavicon(item.url)} alt="icon" className="size-5" />
       );
     case "search":
       return <MagnifyingGlassIcon className="size-5" />;
