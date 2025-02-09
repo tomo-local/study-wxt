@@ -1,5 +1,32 @@
 import ArrowLongRightIcon from "@heroicons/react/16/solid/ArrowLongRightIcon";
+import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
+import WindowIcon from "@heroicons/react/16/solid/WindowIcon";
+import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
+
 import { ListContext } from "@/machine/searchList";
+
+function LeftIcon({ item }: { item: ListContext }) {
+  const searchFavicon = (url: string) => {
+    return `http://www.google.com/s2/favicons?domain=${url}`;
+  };
+
+  switch (item.type) {
+    case "tab":
+      return item.icon ? (
+        <img src={item.icon} alt="icon" className="size-5" />
+      ) : (
+        <WindowIcon className="size-5" />
+      );
+    case "history":
+      return (
+        <img src={searchFavicon(item.url)} alt="icon" className="size-5" />
+      );
+    case "search":
+      return <MagnifyingGlassIcon className="size-5" />;
+    default:
+      return <QuestionMarkCircleIcon className="size-5" />;
+  }
+}
 
 type ResultLineProps = {
   key: string;
@@ -24,29 +51,12 @@ function ResultLine({
         key={item.type === "tab" ? item.id : item.url}
         className={`${
           selectedIndex === index && "bg-gray-700"
-        } border-gray-700 rounded-lg flex w-full space-x-3 space-y-1 p-3 text-left hover:bg-gray-700`}
+        } border-gray-700 rounded-lg flex w-full space-x-3 space-y-1 p-3 text-left hover:bg-gray-700 flex items-center justify-center justify-items-center`}
         onMouseEnter={() => onMouseEnter(index)}
         onClick={onClick}
       >
         <div className="flex items-center justify-center flex-none h-full justify-items-center">
-          {item.type === "tab" &&
-            item.icon && ( // アイコンを表示
-              <img src={item.icon} alt="icon" className="size-5" />
-            )}
-          {item.type === "history" && (
-            <img
-              src={`http://www.google.com/s2/favicons?domain=${item.url}`}
-              alt=""
-              className="size-5"
-            />
-          )}
-          {item.type === "search" && (
-            <img
-              src={`http://www.google.com/s2/favicons?domain=${item.url}`}
-              alt=""
-              className="size-5"
-            />
-          )}
+          <LeftIcon item={item} />
         </div>
         <div className="text-left truncate grow text-nowrap">{item.title}</div>
         {item.type === "tab" && (
