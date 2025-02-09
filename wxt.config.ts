@@ -10,7 +10,7 @@ export default defineConfig({
   srcDir: "src",
   outDir: "dist",
   manifest: {
-    permissions: ["tabs", "history", "activeTab"],
+    permissions: ["tabs", "history", "activeTab", "bookmarks"],
     commands: {
       openPopup: {
         suggested_key: {

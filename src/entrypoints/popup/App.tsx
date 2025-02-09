@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import SearchBar from "@/components/SearchBar";
 import ResultLine from "@/components/ResultLine";
 
-import { ListContext } from "@/machine/searchList";
+import { ListType, ListContext } from "@/machine/searchList";
 import {
   searchHistorySearch,
   searchSuggestions,
@@ -12,32 +12,14 @@ import {
 } from "@/function/search";
 
 const Popup = () => {
+  const [searchType, setSearchType] = useState<ListType>("all");
+  const [stockType, setStockType] = useState<string>();
+
   const [list, setList] = useState<ListContext[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isComposing, setIsComposing] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const listRef = useRef<HTMLUListElement>(null);
-
-  useEffect(() => {
-    init();
-  }, []);
-
-  const init = async () => {
-    const newList = await searchTabSearch({
-      query: "",
-      option: { count: 4 },
-    });
-
-    const listContext = newList.map((tab) => ({
-      type: "tab",
-      title: tab?.title || "",
-      icon: tab?.favIconUrl,
-      id: tab.id,
-    })) as ListContext[];
-
-    setList(listContext);
-    setSelectedIndex(0);
-  };
 
   useEffect(() => {
     if (listRef.current && selectedIndex >= 0) {
@@ -49,17 +31,23 @@ const Popup = () => {
     }
   }, [selectedIndex]);
 
-  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
-    setSearchTerm(query);
+  useEffect(() => {
+    updateList();
+  }, [searchTerm]);
 
-    const newList = await searchList(query, {
+  const updateList = async () => {
+    const newList = await searchList(searchTerm, {
       suggestionCount: 5,
       historyCount: 10,
       tabCount: 10,
     });
 
     setList(newList);
+  };
+
+  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchTerm(query);
   };
 
   const searchList = async (
@@ -70,50 +58,67 @@ const Popup = () => {
       suggestionCount?: number;
     }
   ) => {
-    const suggestionResult = await searchSuggestions({
-      query,
-      option: { count: option.suggestionCount || 5 },
-    });
+    const suggestionResult = ["all", "search"].includes(searchType)
+      ? await searchSuggestions({
+          query,
+          option: {
+            count: searchType === "search" ? 20 : option.suggestionCount || 5,
+          },
+        })
+      : [];
 
-    const tabResult = await searchTabSearch({
-      query,
-      option: { count: option.tabCount || 10 },
-    });
+    const tabResult = ["all", "tab"].includes(searchType)
+      ? await searchTabSearch({
+          query,
+          option: { count: searchType === "tab" ? 20 : option.tabCount },
+        })
+      : [];
 
-    const historyResult = await searchHistorySearch({
-      query,
-      option: {
-        count: option.historyCount || 10,
-        term: {
-          start: new Date().getTime() - 1000 * 60 * 60 * 24 * 30, // 30日前から
-          end: new Date().getTime(), // 現在まで
-        },
-      },
-    });
+    const historyResult = ["all", "history"].includes(searchType)
+      ? await searchHistorySearch({
+          query,
+          option: {
+            count: searchType === "history" ? 20 : option.historyCount,
+            term: {
+              start: new Date().getTime() - 1000 * 60 * 60 * 24 * 30, // 30日前から
+              end: new Date().getTime(), // 現在まで
+            },
+          },
+        })
+      : [];
 
-    const bookmarkResult = await searchBookmarkSearch({
-      query,
-      option: { count: 5 },
+    const bookmarkResult = ["all", "bookmark"].includes(searchType)
+      ? await searchBookmarkSearch({
+          query,
+          option: { count: 10 },
+        })
+      : [];
+
+    console.log({
+      suggestionResult,
+      tabResult,
+      historyResult,
+      bookmarkResult,
     });
 
     const list = [
-      ...suggestionResult.map((item) => ({
+      ...suggestionResult?.map((item) => ({
         type: "search",
         title: item,
         url: `https://www.google.com/search?q=${item}`,
       })),
-      ...tabResult.map((tab) => ({
+      ...tabResult?.map((tab) => ({
         type: "tab",
         title: tab?.title || "",
         icon: tab?.favIconUrl,
         id: tab.id,
       })),
-      ...historyResult.map((history) => ({
+      ...historyResult?.map((history) => ({
         type: "history",
         title: history.title || "",
         url: history.url,
       })),
-      ...bookmarkResult.map((bookmark) => ({
+      ...bookmarkResult?.map((bookmark) => ({
         type: "bookmark",
         title: bookmark.title,
         url: bookmark.url,
@@ -144,9 +149,9 @@ const Popup = () => {
       // タブ、履歴、検索候補の優先順位
       const typeOrder = {
         tab: 0,
-        history: 1,
+        history: 3,
         search: 2,
-        bookmark: 3,
+        bookmark: 1,
       };
 
       if (a.type === b.type) {
@@ -160,6 +165,11 @@ const Popup = () => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === "t") {
+      e.preventDefault();
+      window.close();
+    }
+
     if (e.key === "Enter" && selectedIndex >= 0 && !isComposing) {
       const item = list[selectedIndex];
       if (item.type === "tab") {
@@ -171,16 +181,68 @@ const Popup = () => {
       setSelectedIndex(-1); // 選択後、選択状態をリセット
     }
 
-    if ((e.metaKey || e.ctrlKey) && e.key === "t") {
-      e.preventDefault();
-      window.close();
-    }
-
     if (e.key === "ArrowDown") {
       setSelectedIndex((prevIndex) => Math.min(prevIndex + 1, list.length - 1));
     }
     if (e.key === "ArrowUp") {
       setSelectedIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+    }
+
+    if (e.key === "Tab") {
+      e.preventDefault();
+      if (searchTerm.toLowerCase() === "google") {
+        setStockType(searchTerm);
+        setSearchType("search");
+        setSearchTerm("");
+      }
+
+      if (searchTerm.toLowerCase() === "tab") {
+        setStockType(searchTerm);
+        setSearchType("tab");
+        setSearchTerm("");
+      }
+
+      if (searchTerm.toLowerCase() === "history") {
+        setStockType(searchTerm);
+        setSearchType("history");
+        setSearchTerm("");
+      }
+
+      if (searchTerm.toLowerCase() === "bookmark") {
+        setStockType(searchTerm);
+        setSearchType("bookmark");
+        setSearchTerm("");
+      }
+
+      if (searchTerm.toLowerCase() === "all") {
+        setSearchType("all");
+        setSearchTerm("");
+      }
+    }
+
+    if (
+      (e.key === "Delete" || e.key === "Backspace") &&
+      searchTerm === "" &&
+      searchType !== "all"
+    ) {
+      e.preventDefault();
+      setSearchType("all");
+      setSearchTerm(stockType || "");
+      setStockType("");
+    }
+
+    if ((e.metaKey || e.ctrlKey) && e.key === "w") {
+      e.preventDefault();
+      const tab = list[selectedIndex];
+
+      if (tab.type === "tab") {
+        chrome.tabs.remove(tab.id as number);
+        setSelectedIndex(selectedIndex <= 0 ? 0 : selectedIndex - 1);
+
+        const newList = list.filter((_, index) => index !== selectedIndex);
+
+        setList(newList);
+      }
     }
   };
 
@@ -192,6 +254,7 @@ const Popup = () => {
     <div className="px-4 pt-2 pb-3 font-sans text-white bg-gray-800 w-[700px]">
       <div className="sticky top-0 border-b border-gray-700 ">
         <SearchBar
+          type={searchType}
           value={searchTerm}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}

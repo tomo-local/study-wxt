@@ -2,6 +2,7 @@ import ArrowLongRightIcon from "@heroicons/react/16/solid/ArrowLongRightIcon";
 import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
 import WindowIcon from "@heroicons/react/16/solid/WindowIcon";
 import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
+import BookmarkIcon from "@heroicons/react/16/solid/BookmarkIcon";
 
 import { ListContext } from "@/machine/searchList";
 
@@ -18,6 +19,7 @@ function LeftIcon({ item }: { item: ListContext }) {
         <WindowIcon className="size-5" />
       );
     case "history":
+    case "bookmark":
       return (
         <img src={searchFavicon(item.url)} alt="icon" className="size-5" />
       );
@@ -69,11 +71,19 @@ function ResultLine({
             </span>
           </div>
         )}
-        {item.type === "history" && item.url && (
+        {(item.type === "history" || item.type === "bookmark") && item.url && (
           <div className="grow">
             <span className="text-gray-500 truncate text-none">
               {new URL(item.url).hostname}
             </span>
+          </div>
+        )}
+
+        {item.type === "bookmark" && (
+          <div className="flex items-center justify-between flex-none ml-auto">
+            <div className="flex items-center justify-center p-1 bg-gray-900 rounded-lg">
+              <BookmarkIcon className="size-4" />
+            </div>
           </div>
         )}
       </button>
