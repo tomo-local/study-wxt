@@ -1,3 +1,5 @@
+type ListType = "all" | "search" | "tab" | "history" | "bookmark";
+
 type ListContext =
   | SearchContext
   | TabContext
@@ -29,4 +31,4 @@ type BookmarkContext = {
   url: string;
 };
 
-export { ListContext };
+export { ListType, ListContext };
