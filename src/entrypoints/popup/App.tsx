@@ -174,11 +174,20 @@ const Popup = () => {
       const item = list[selectedIndex];
       if (item.type === "tab") {
         chrome.tabs.update(item.id as number, { active: true });
-        window.close();
       } else {
         window.open(item.url, "_blank");
       }
       setSelectedIndex(-1); // 選択後、選択状態をリセット
+    }
+
+    if (
+      e.key === "Enter" &&
+      selectedIndex < 0 &&
+      !isComposing &&
+      searchType === "search" &&
+      searchTerm !== ""
+    ) {
+      window.open(`https://www.google.com/search?q=${searchTerm}`, "_blank");
     }
 
     if (e.key === "ArrowDown") {

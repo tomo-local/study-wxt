@@ -85,7 +85,7 @@ type SearchSuggestionsInput = {
 const searchSuggestions = async ({ query, option }: SearchSuggestionsInput) => {
   const apiUrl = `https://www.google.com/complete/search?q=${encodeURIComponent(
     query
-  )}&client=chrome`; // Google Suggest API
+  )}&client=chrome`;
 
   try {
     const response = await fetch(apiUrl);
