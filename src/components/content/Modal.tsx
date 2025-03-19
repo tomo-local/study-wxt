@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 
 interface ModalProps {
   isOpen: boolean;
@@ -13,11 +13,12 @@ interface ModalProps {
 }
 
 const ModalOverlay: React.FC<{
-  onClose: () => void;
+  onClose: (event: React.MouseEvent) => void;
   className?: string;
   children: ReactNode;
 }> = ({ onClose, className, children }) => (
   <div
+    id="modal-overlay"
     className={`fixed inset-0 z-50 flex items-center justify-center ${className}`}
     onClick={onClose}
   >
@@ -30,39 +31,26 @@ const ModalContainer: React.FC<{
   children: ReactNode;
   onClick: (e: React.MouseEvent) => void;
 }> = ({ className, children, onClick }) => (
-  <div className={`relative ${className}`} onClick={onClick}>
+  <div
+    id="modal-container"
+    className={`relative ${className}`}
+    onClick={onClick}
+  >
     {children}
   </div>
 );
 
 const ModalCloseButton: React.FC<{
-  onClose: () => void;
+  onClose: (event: React.MouseEvent) => void;
   className?: string;
 }> = ({ onClose, className }) => (
-  <button className={`absolute top-2 right-2 ${className}`} onClick={onClose}>
+  <button
+    id="modal-close-button"
+    className={`absolute top-2 right-2 ${className}`}
+    onClick={onClose}
+  >
     &times;
   </button>
-);
-
-const ModalHeader: React.FC<{
-  className?: string;
-  children: ReactNode;
-}> = ({ className, children }) => (
-  <div className={`modal-header ${className}`}>{children}</div>
-);
-
-const ModalBody: React.FC<{
-  className?: string;
-  children: ReactNode;
-}> = ({ className, children }) => (
-  <div className={`modal-body ${className}`}>{children}</div>
-);
-
-const ModalFooter: React.FC<{
-  className?: string;
-  children: ReactNode;
-}> = ({ className, children }) => (
-  <div className={`modal-footer ${className}`}>{children}</div>
 );
 
 const Modal: React.FC<ModalProps> = ({
@@ -89,11 +77,5 @@ const Modal: React.FC<ModalProps> = ({
 };
 
 export default Modal;
-export {
-  ModalOverlay,
-  ModalContainer,
-  ModalCloseButton,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-};
+
+export { ModalOverlay, ModalContainer, ModalCloseButton };
