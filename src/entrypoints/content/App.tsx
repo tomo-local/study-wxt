@@ -13,13 +13,12 @@ export default function App() {
   const [query, setQuery] = useState("");
   const tabs = useTabSearch(query);
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const listRef = useRef<HTMLUListElement>(null);
-
   const handleClose = (e: React.MouseEvent) => closeContent(ActionType.runtime);
-
   const handleEscapeKey = () => closeContent(ActionType.runtime);
 
+  // TODO： arrow keyのhookを作成する
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const listRef = useRef<HTMLUListElement>(null);
   useEffect(() => {
     if (listRef.current && selectedIndex >= 0) {
       const selectedItem = listRef.current.children[selectedIndex];
@@ -37,6 +36,7 @@ export default function App() {
       setSelectedIndex((prev) => (prev < tabs.length - 1 ? prev + 1 : 0));
     }
   };
+  // TODO： tab keyのhookを作成する
 
   const handleEnterKey = () => {
     if (tabs[selectedIndex]) {
@@ -60,10 +60,7 @@ export default function App() {
           />
           <div className="pt-3 pb-2 mt-4 border-t border-gray-700 border-solid">
             {tabs?.length && (
-              <ul
-                className="overflow-y-auto hidden-scrollbar"
-                ref={listRef}
-              >
+              <ul className="overflow-y-auto hidden-scrollbar" ref={listRef}>
                 {tabs.map((item, index) => (
                   <ResultLine
                     key={item.id}
