@@ -4,7 +4,7 @@ import WindowIcon from "@heroicons/react/16/solid/WindowIcon";
 import QuestionMarkCircleIcon from "@heroicons/react/16/solid/QuestionMarkCircleIcon";
 import BookmarkIcon from "@heroicons/react/16/solid/BookmarkIcon";
 
-import { ListContext } from "@/machine/searchList";
+import { ListContext } from "@/types/search";
 
 function LeftIcon({ item }: { item: ListContext }) {
   const searchFavicon = (url: string) => {
@@ -50,10 +50,11 @@ function ResultLine({
   return (
     <li key={key}>
       <button
+        type="button"
         key={item.type === "tab" ? item.id : item.url}
         className={`${
           selectedIndex === index && "bg-gray-700"
-        } border-gray-700 rounded-lg flex w-full space-x-3 space-y-1 p-3 text-left hover:bg-gray-700 flex items-center justify-center justify-items-center`}
+        } border-gray-700 rounded-lg flex w-full space-x-3 my-1 p-3 text-left hover:bg-gray-700 flex items-center justify-center justify-items-center`}
         onMouseEnter={() => onMouseEnter(index)}
         onClick={onClick}
       >

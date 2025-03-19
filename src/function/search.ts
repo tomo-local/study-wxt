@@ -90,7 +90,7 @@ const searchSuggestions = async ({ query, option }: SearchSuggestionsInput) => {
   try {
     const response = await fetch(apiUrl);
     const data = await response.json();
-    const suggestions = (data[1] as String[]) || []; // 候補がない場合は空配列を返す
+    const suggestions = (data[1] as string[]) || []; // 候補がない場合は空配列を返す
 
     return option?.count ? suggestions.slice(0, option?.count) : suggestions;
   } catch (error) {

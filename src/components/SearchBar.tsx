@@ -1,5 +1,6 @@
 import MagnifyingGlassIcon from "@heroicons/react/20/solid/MagnifyingGlassIcon";
-import { ListType } from "@/machine/searchList";
+import Icon from "@/public/icon.png";
+import { ListType } from "@/types/search";
 
 function Chip({ value }: { value: string }) {
   return (

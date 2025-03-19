@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import SearchBar from "@/components/SearchBar";
 import ResultLine from "@/components/ResultLine";
 
-import { ListType, ListContext } from "@/machine/searchList";
+import { ListType, ListContext } from "@/types/search";
 import {
   searchHistorySearch,
   searchSuggestions,
@@ -165,9 +165,11 @@ const Popup = () => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    console.log("==========-", e.metaKey, e.ctrlKey, e.key);
     if ((e.metaKey || e.ctrlKey) && e.key === "t") {
+      console.log("close");
       e.preventDefault();
-      window.close();
+      window?.close();
     }
 
     if (e.key === "Enter" && selectedIndex >= 0 && !isComposing) {
@@ -261,7 +263,7 @@ const Popup = () => {
 
   return (
     <div className="px-4 pt-2 pb-3 font-sans text-white bg-gray-800 w-[700px]">
-      <div className="sticky top-0 border-b border-gray-700 ">
+      <div className="sticky top-0 border-b border-gray-700">
         <SearchBar
           type={searchType}
           value={searchTerm}
@@ -274,7 +276,7 @@ const Popup = () => {
       <div className="mt-4 bg-gray-800 rounded">
         <ul
           ref={listRef}
-          className="overflow-y-scroll max-h-[400px] hidden-scrollbar"
+          className="overflow-y-scroll max-h-[400px] hidden-scrollbar my-1"
         >
           {list.map((item, index) => (
             <ResultLine
