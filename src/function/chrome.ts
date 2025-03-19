@@ -1,12 +1,4 @@
-enum MessageType {
-  CLOSE_POPUP = "CLOSE_POPUP",
-  OPEN_POPUP = "OPEN_POPUP",
-}
-
-enum ActionType {
-  runtime = "runtime",
-  tabs = "tabs",
-}
+import { MessageType, ActionType } from "@/types/message";
 
 const actionRunContent = (message: MessageType) => {
   chrome.runtime.sendMessage({ type: message }).catch((err) => {
@@ -45,4 +37,4 @@ const openContent = async (type: ActionType) => {
   }
 };
 
-export { closeContent, openContent, ActionType, MessageType };
+export { closeContent, openContent, actionRunContent, ActionType, MessageType };
