@@ -15,7 +15,6 @@
     "postinstall": "wxt prepare"
   },
   "dependencies": {
-    "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
     "@tailwindcss/postcss": "^4.0.3",
     "@xstate/react": "^5.0.2",
