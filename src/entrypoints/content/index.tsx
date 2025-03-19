@@ -1,5 +1,6 @@
 import ReactDOM from "react-dom/client";
 import App from "../content/App";
+import { MessageType } from "@/function/chrome";
 
 export default defineContentScript({
   matches: ["https://www.google.com/*"],
@@ -25,9 +26,14 @@ export default defineContentScript({
       },
     });
     chrome.runtime.onMessage.addListener((message) => {
-      if (message.type === "OPEN_POPUP") {
+      if (message.type === MessageType.OPEN_POPUP) {
         open ? ui.remove() : ui.mount();
         open = !open;
+      }
+
+      if (message.type === MessageType.CLOSE_POPUP) {
+        ui.remove();
+        open = false;
       }
     });
   },
