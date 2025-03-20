@@ -1,3 +1,4 @@
+import { actionQuery } from "@/utils/chrome";
 import {
   Tab,
   QueryOption,
@@ -5,27 +6,7 @@ import {
   UpdateMessage,
   RemoveMessage,
 } from "@/types/chrome";
-
-const actionQuery = async (
-  query: string,
-  option: chrome.tabs.QueryInfo
-): Promise<chrome.tabs.Tab[]> => {
-  const response = await chrome.tabs.query(option);
-
-  if (!query) {
-    return response;
-  }
-
-  return response.filter((tab) => {
-    const title = tab.title || "";
-    const url = tab.url ? new URL(tab.url).hostname : "";
-
-    const isTitleMatch = title.toLowerCase().includes(query.toLowerCase());
-    const isUrlMatch = url.toLowerCase().includes(query.toLowerCase());
-
-    return isTitleMatch || isUrlMatch;
-  }) as chrome.tabs.Tab[];
-};
+import { ResultType } from "@/types/result";
 
 const queryTabs = async (query: string, option: QueryOption) => {
   const response = await actionQuery(query, {
@@ -35,6 +16,7 @@ const queryTabs = async (query: string, option: QueryOption) => {
   const tabs = response
     .map((tab) => {
       return {
+        type: ResultType.Tab,
         id: tab.id,
         title: tab.title || "",
         url: tab.url || "",

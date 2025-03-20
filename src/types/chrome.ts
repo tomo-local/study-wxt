@@ -1,3 +1,5 @@
+import { ResultType } from "@/types/result";
+
 export enum MessageType {
   CLOSE_POPUP = "CLOSE_POPUP",
   OPEN_POPUP = "OPEN_POPUP",
@@ -13,6 +15,7 @@ export enum ActionType {
 }
 
 export interface Tab {
+  type: ResultType.Tab;
   id: number;
   title: string;
   url: string;
