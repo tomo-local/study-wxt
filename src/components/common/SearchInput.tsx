@@ -5,11 +5,6 @@ interface SearchInputProps {
 
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 
-  // MEMO: 現在は使用していない props
-  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
-  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
-  // MEMO: 現在は使用していない props
-
   // MEMO: カスタムイベントを追加
   onArrowUpDownKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   onEscapeKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
