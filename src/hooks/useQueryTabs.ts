@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Tab, MessageType } from "@/types/chrome";
 
-const DEFAULT_COUNT = 3;
+const DEFAULT_COUNT = undefined;
 
 export default function useQueryTabs(query: string) {
   const [filteredTabs, setFilteredTabs] = useState<Tab[]>([]);
