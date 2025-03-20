@@ -2,7 +2,7 @@ import "@/assets/global.css";
 import { useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 
-import useQueryResult from "@/hooks/useQueryResult";
+import useQueryResult from "@/hooks/query/useQueryResult";
 import useControlTab from "@/hooks/useControlTab";
 import useArrowKeyControl from "@/hooks/useArrowKeyControl";
 

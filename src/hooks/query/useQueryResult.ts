@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import useQueryTabs from "@/hooks/useQueryTabs";
-import useQuerySuggestions from "@/hooks/useQuerySuggestions";
+import useQueryTabs from "@/hooks/query/useQueryTabs";
+import useQuerySuggestions from "@/hooks/query/useQuerySuggestions";
 
 import { Tab } from "@/types/chrome";
 import { Suggestion } from "@/types/google";
