@@ -1,7 +1,10 @@
-import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
-
 interface SearchInputProps {
+  className?: string;
+  leftContent?: React.ReactNode;
+  rightContent?: React.ReactNode;
+
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+
   // MEMO: 現在は使用していない props
   onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
@@ -15,6 +18,9 @@ interface SearchInputProps {
 }
 
 export default function SearchInput({
+  className,
+  leftContent,
+  rightContent,
   onChange,
   onArrowUpDownKeyDown,
   onEscapeKeyDown,
@@ -45,17 +51,16 @@ export default function SearchInput({
 
   return (
     <div className="flex items-center space-x-2">
-      {/* TODO: LeftIconのcomponentを外から受け取れるようにする */}
-      <MagnifyingGlassIcon className="w-6 h-6 text-gray-400" />
+      {leftContent && <div className="flex-none">{leftContent}</div>}
       <input
         type="text"
         placeholder="Search or Enter URL ..."
-        className="w-full px-3 py-2 text-lg text-gray-200 bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500"
+        className={`w-full px-3 py-2 text-lg rounded-md focus:outline-none focus:ring-2 ${className}`}
         autoFocus
         onChange={onChange}
         onKeyDown={handleKeyDown}
       />
-      {/* TODO: RightMessageのcomponentを外から受け取れるようにする */}
+      {rightContent && <div className="flex-none">{rightContent}</div>}
     </div>
   );
 }
