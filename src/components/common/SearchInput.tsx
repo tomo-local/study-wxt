@@ -4,6 +4,8 @@ interface SearchInputProps {
   rightContent?: React.ReactNode;
 
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onCompositionStart: (e: React.CompositionEvent<HTMLInputElement>) => void;
+  onCompositionEnd: (e: React.CompositionEvent<HTMLInputElement>) => void;
 
   // MEMO: カスタムイベントを追加
   onArrowUpDownKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
@@ -17,6 +19,8 @@ export default function SearchInput({
   leftContent,
   rightContent,
   onChange,
+  onCompositionStart,
+  onCompositionEnd,
   onArrowUpDownKeyDown,
   onEscapeKeyDown,
   onTabKeyDown,
@@ -53,6 +57,8 @@ export default function SearchInput({
         className={`w-full px-3 py-2 text-lg rounded-md focus:outline-none focus:ring-2 ${className}`}
         autoFocus
         onChange={onChange}
+        onCompositionStart={onCompositionStart}
+        onCompositionEnd={onCompositionEnd}
         onKeyDown={handleKeyDown}
       />
       {rightContent && <div className="flex-none">{rightContent}</div>}

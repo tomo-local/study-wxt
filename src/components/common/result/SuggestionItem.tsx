@@ -2,15 +2,15 @@ import ArrowLongRightIcon from "@heroicons/react/16/solid/ArrowLongRightIcon";
 import WindowIcon from "@heroicons/react/16/solid/WindowIcon";
 import CommonItem from "@/components/common/result/CommonItem";
 import SquareIcon from "@/components/common/icon/SquareIcon";
-import { Tab } from "@/types/chrome";
+import { Suggestion } from "@/types/google";
 
-export default function TabItem({
+export default function SuggestionItem({
   key,
   item,
   isSelected,
 }: {
   key: number;
-  item: Tab;
+  item: Suggestion;
   isSelected: boolean;
 }) {
   return (
@@ -21,19 +21,15 @@ export default function TabItem({
         } `}
         leftContent={
           <SquareIcon className={isSelected ? "bg-gray-200" : ""}>
-            {item.icon ? (
-              <img src={item.icon} alt="favicon" className="size-4" />
-            ) : (
-              <WindowIcon className="text-gray-400 size-4" />
-            )}
+            <WindowIcon className="text-gray-400 size-5" />
           </SquareIcon>
         }
         rightContent={
           <div className="flex items-center space-x-2">
-            <span className="text-xs text-gray-300">Go to Tab</span>
+            <span className="text-xs text-gray-300">Go to Search</span>
             <SquareIcon className={isSelected ? "bg-gray-200" : ""}>
               <ArrowLongRightIcon
-                className={`size-4 ${
+                className={`size-5 ${
                   isSelected ? "text-gray-400" : "text-gray-200"
                 }`}
               />

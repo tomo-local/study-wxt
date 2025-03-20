@@ -6,7 +6,7 @@ interface ResultItemProps {
   isSelected: boolean;
 }
 
-export default function ResultItem({
+export default function CommonItem({
   className,
   leftContent,
   rightContent,

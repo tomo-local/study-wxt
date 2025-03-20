@@ -2,32 +2,46 @@ import "@/assets/global.css";
 import { useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 
-import useQueryTabs from "@/hooks/useQueryTabs";
+import useQueryResult from "@/hooks/useQueryResult";
 import useControlTab from "@/hooks/useControlTab";
 import useArrowKeyControl from "@/hooks/useArrowKeyControl";
 
 import SearchInput from "@/components/common/SearchInput";
 import { ModalOverlay, ModalContainer } from "@/components/content/Modal";
 import ResultFooter from "@/components/common/result/ResultFooter";
-import TabItem from "@/components/common/result/TabItem";
+import ResultLine from "@/components/common/result/ResultLine";
 
 import { closeContent } from "@/function/chrome/open";
 import { ActionType } from "@/types/chrome";
+import { ResultType } from "@/types/result";
 
 export default function App() {
   const [query, setQuery] = useState("");
-  const { tabs } = useQueryTabs(query);
-  const { updateTab } = useControlTab();
+  const [isComposing, setIsComposing] = useState(false);
+
+  const { result } = useQueryResult(query);
+  const { updateTab, createTab } = useControlTab();
   const { selectedIndex, listRef, handleArrowUpDownKey } =
-    useArrowKeyControl(tabs);
+    useArrowKeyControl(result);
 
   const handleClose = () => closeContent(ActionType.runtime);
 
   const handleEnterKey = () => {
-    if (tabs[selectedIndex]) {
-      closeContent(ActionType.runtime);
-      const { id, windowId } = tabs[selectedIndex];
+    if (!result[selectedIndex] || isComposing) {
+      return;
+    }
+
+    closeContent(ActionType.runtime);
+
+    if (result[selectedIndex].type === ResultType.Google) {
+      createTab(result[selectedIndex].url);
+      return;
+    }
+
+    if (result[selectedIndex].type === ResultType.Tab) {
+      const { id, windowId } = result[selectedIndex];
       updateTab(id, windowId);
+      return;
     }
   };
 
@@ -41,11 +55,13 @@ export default function App() {
               <MagnifyingGlassIcon className="text-gray-400 size-6" />
             }
             onChange={(e) => setQuery(e.target.value)}
+            onCompositionStart={() => setIsComposing(true)}
+            onCompositionEnd={() => setIsComposing(false)}
             onArrowUpDownKeyDown={handleArrowUpDownKey}
             onEnterKeyDown={handleEnterKey}
             onEscapeKeyDown={handleClose}
           />
-          {tabs?.length ? (
+          {result?.length ? (
             <>
               <div className="border-t border-gray-700 border-solid" />
               <div className="pt-3 pb-2">
@@ -53,8 +69,8 @@ export default function App() {
                   className="overflow-x-hidden overflow-y-auto hidden-scrollbar max-h-48"
                   ref={listRef}
                 >
-                  {tabs.map((item, index) => (
-                    <TabItem
+                  {result.map((item, index) => (
+                    <ResultLine
                       key={item.id}
                       item={item}
                       isSelected={index === selectedIndex}
@@ -66,9 +82,9 @@ export default function App() {
           ) : null}
           <div className="border-t border-gray-700 border-solid" />
           <ResultFooter>
-            {tabs.length ? (
+            {result.length ? (
               <p className="text-right text-gray-400">
-                {tabs.length} results found
+                {result.length} results found
               </p>
             ) : (
               <p className="text-right text-gray-400">No results found</p>

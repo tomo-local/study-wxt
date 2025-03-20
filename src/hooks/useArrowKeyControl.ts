@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { Tab } from "@/types/chrome";
+import { Suggestion } from "@/types/google";
 
-export default function useArrowKeyControl(tabs: Tab[]) {
+export default function useArrowKeyControl(tabs: (Tab | Suggestion)[]) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const listRef = useRef<HTMLUListElement>(null);
 
