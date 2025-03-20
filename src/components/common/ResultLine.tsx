@@ -1,5 +1,7 @@
 import ArrowLongRightIcon from "@heroicons/react/16/solid/ArrowLongRightIcon";
 import WindowIcon from "@heroicons/react/16/solid/WindowIcon";
+import ResultItem from "@/components/common/result/ResultItem";
+import SquareIcon from "@/components/common/icon/SquareIcon";
 
 type ListContext = {
   id: number;
@@ -19,30 +21,35 @@ function ResultLine({
 }) {
   return (
     <li key={key}>
-      <button
-        className={`
-        flex items-center justify-between w-full px-4 py-2 text-left text-gray-200 bg-gray-800 rounded-lg shadow-xl border-sky-500
-        ${isSelected ? "bg-sky-500" : ""}
-        `}
-      >
-        <div className="flex flex-col flex-1">
+      <ResultItem
+        className={`text-gray-200 bg-gray-800 border-sky-500 ${
+          isSelected && "bg-sky-500"
+        } `}
+        leftContent={
+          <SquareIcon className={isSelected ? "bg-gray-200" : ""}>
+            {item.icon ? (
+              <img src={item.icon} alt="favicon" className="size-5" />
+            ) : (
+              <WindowIcon className="text-gray-400 size-5" />
+            )}
+          </SquareIcon>
+        }
+        rightContent={
           <div className="flex items-center space-x-2">
-            <div
-              className={`flex items-center justify-center w-8 h-8 rounded-md ${
-                isSelected && "bg-gray-600"
-              }`}
-            >
-              {item.icon ? (
-                <img src={item.icon} alt="favicon" className="w-4 h-4" />
-              ) : (
-                <WindowIcon className="text-gray-400 size-5" />
-              )}
-            </div>
-            <span className="text-base">{item.title}</span>
+            <span className="text-xs text-gray-300">Go to Tab</span>
+            <SquareIcon className={isSelected ? "bg-gray-200" : ""}>
+              <ArrowLongRightIcon
+                className={`size-5 ${
+                  isSelected ? "text-gray-400" : "text-gray-200"
+                }`}
+              />
+            </SquareIcon>
           </div>
-        </div>
-        <ArrowLongRightIcon className="w-4 h-4 text-gray-400" />
-      </button>
+        }
+        isSelected={isSelected}
+      >
+        <span className="text-sm font-medium">{item.title}</span>
+      </ResultItem>
     </li>
   );
 }
