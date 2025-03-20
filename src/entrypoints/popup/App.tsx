@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
-import SearchBar from "@/components/SearchBar";
-import ResultLine from "@/components/ResultLine";
+import SearchBar from "@/components/common/SearchBar";
+import ResultLine from "@/components/common/ResultLine";
 
 import { ListType, ListContext } from "@/types/search";
 import {
