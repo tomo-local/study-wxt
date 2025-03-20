@@ -29,12 +29,15 @@ const ModalOverlay: React.FC<{
 const ModalContainer: React.FC<{
   className?: string;
   children: ReactNode;
-  onClick: (e: React.MouseEvent) => void;
+  onClick?: (e: React.MouseEvent) => void;
 }> = ({ className, children, onClick }) => (
   <div
     id="modal-container"
     className={`relative ${className}`}
-    onClick={onClick}
+    onClick={(e) => {
+      e.stopPropagation();
+      onClick && onClick(e);
+    }}
   >
     {children}
   </div>
