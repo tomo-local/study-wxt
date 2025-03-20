@@ -47,14 +47,25 @@ type Tab = {
 };
 
 const searchTab = (query: string, callback: (tabs: Tab[]) => void) => {
-  chrome.tabs.query({ currentWindow: true }, (tabs) => {
+  chrome.tabs.query({ currentWindow: true }, (_tabs) => {
+    const tabs = _tabs.map((tab) => ({
+      id: tab.id,
+      title: tab.title || "",
+      url: tab.url,
+      icon: tab.favIconUrl || "",
+    })) as Tab[];
     callback(
-      tabs.map((tab) => ({
-        id: tab.id,
-        title: tab.title || "",
-        url: tab.url,
-        icon: tab.favIconUrl || "",
-      })) as Tab[]
+      tabs.filter((tab) => {
+        if (!query) {
+          return true;
+        }
+
+        const lowerQuery = query.toLowerCase();
+
+        const lowerTitle = tab.title.toLowerCase();
+        const lowerUrl = tab.url.toLowerCase();
+        return lowerTitle.includes(lowerQuery) || lowerUrl.includes(lowerQuery);
+      })
     );
   });
 };
