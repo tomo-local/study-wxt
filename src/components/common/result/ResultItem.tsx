@@ -19,10 +19,10 @@ export default function ResultItem({
         ${className}
       `}
     >
-      <div className="flex items-center w-full space-x-2">
+      <div className="flex items-center min-w-full space-x-2">
         {leftContent && <div className="flex-none">{leftContent}</div>}
-        <div className="flex flex-col flex-grow">{children}</div>
-        {rightContent && <div>{rightContent}</div>}
+        <div className="flex-1">{children}</div>
+        {rightContent && <div className="flex-none">{rightContent}</div>}
       </div>
     </div>
   );
