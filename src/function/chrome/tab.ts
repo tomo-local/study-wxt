@@ -1,4 +1,10 @@
-import { Tab, QueryOption } from "@/types/chrome";
+import {
+  Tab,
+  QueryOption,
+  CreateMessage,
+  UpdateMessage,
+  RemoveMessage,
+} from "@/types/chrome";
 
 const actionQuery = async (
   query: string,
@@ -43,13 +49,11 @@ const queryTabs = async (query: string, option: QueryOption) => {
   return option.count ? tabs.slice(0, option.count) : tabs;
 };
 
-const updateTab = async ({
-  tabId,
-  windowId,
-}: {
-  tabId: number;
-  windowId?: number;
-}) => {
+const createTab = async ({ url }: Omit<CreateMessage, "type">) => {
+  await chrome.tabs.create({ url });
+};
+
+const updateTab = async ({ tabId, windowId }: Omit<UpdateMessage, "type">) => {
   await chrome.tabs.update(tabId, { active: true });
 
   // Focus on the window
@@ -58,6 +62,7 @@ const updateTab = async ({
   }
 };
 
-const removeTab = async (tabId: number) => await chrome.tabs.remove(tabId);
+const removeTab = async ({ tabId }: Omit<RemoveMessage, "type">) =>
+  await chrome.tabs.remove(tabId);
 
-export { queryTabs, updateTab, removeTab };
+export { queryTabs, createTab, updateTab, removeTab };
