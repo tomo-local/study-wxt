@@ -3,7 +3,7 @@ import { Tab, MessageType } from "@/types/chrome";
 
 const DEFAULT_COUNT = 3;
 
-export default function useTabSearch(query: string) {
+export default function useQueryTabs(query: string) {
   const [filteredTabs, setFilteredTabs] = useState<Tab[]>([]);
   const [count, setCount] = useState<number | undefined>(DEFAULT_COUNT);
 
