@@ -51,16 +51,16 @@ export default function App() {
   return (
     <ModalOverlay onClose={handleClose}>
       <ModalContainer className="w-full max-w-3xl min-h-48">
-        <div className="px-6 py-3 text-gray-200 bg-gray-800 border-2 border-solid rounded-lg shadow-xl border-sky-500">
+        <div className="px-6 py-2 text-gray-200 bg-gray-800 border-2 border-solid rounded-lg shadow-xl border-sky-500">
           <SearchInput
+            onChange={(e) => setQuery(e.target.value)}
             onEscapeKeyDown={handleEscapeKey}
             onArrowUpDownKeyDown={handleArrowUpDownKey}
             onEnterKeyDown={handleEnterKey}
-            onChange={(e) => setQuery(e.target.value)}
           />
-          <div className="pt-3 pb-2 mt-4 border-t border-gray-700 border-solid">
+          <div className="pt-3 pb-2 mt-2 border-t border-gray-700 border-solid">
             {tabs?.length && (
-              <ul className="overflow-y-auto hidden-scrollbar" ref={listRef}>
+              <ul className="overflow-y-auto hidden-scrollbar max-h-48" ref={listRef}>
                 {tabs.map((item, index) => (
                   <ResultLine
                     key={item.id}
