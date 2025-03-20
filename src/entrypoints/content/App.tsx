@@ -1,8 +1,9 @@
 import "@/assets/global.css";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 
-import useTabSearch from "@/hooks/useTabSearch";
+import useQueryTabs from "@/hooks/useQueryTabs";
+import useArrowKeyControl from "@/hooks/useArrowKeyControl";
 
 import SearchInput from "@/components/common/SearchInput";
 import { ModalOverlay, ModalContainer } from "@/components/content/Modal";
@@ -13,31 +14,11 @@ import { ActionType } from "@/types/chrome";
 
 export default function App() {
   const [query, setQuery] = useState("");
-  const { tabs } = useTabSearch(query);
+  const { tabs } = useQueryTabs(query);
+  const { selectedIndex, listRef, handleArrowUpDownKey } =
+    useArrowKeyControl(tabs);
 
   const handleClose = () => closeContent(ActionType.runtime);
-
-  // TODO： arrow keyのhookを作成する
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const listRef = useRef<HTMLUListElement>(null);
-  useEffect(() => {
-    if (listRef.current && selectedIndex >= 0) {
-      const selectedItem = listRef.current.children[selectedIndex];
-      selectedItem.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-      });
-    }
-  }, [selectedIndex]);
-
-  const handleArrowUpDownKey = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowUp") {
-      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : tabs.length - 1));
-    } else if (e.key === "ArrowDown") {
-      setSelectedIndex((prev) => (prev < tabs.length - 1 ? prev + 1 : 0));
-    }
-  };
-  // TODO： tab keyのhookを作成する
 
   const handleEnterKey = () => {
     if (tabs[selectedIndex]) {
