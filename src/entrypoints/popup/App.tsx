@@ -6,7 +6,7 @@ import useQueryResult from "@/hooks/query/useQueryResult";
 import useQueryControl from "@/hooks/query/useQueryControl";
 import useControlTab from "@/hooks/useControlTab";
 import useArrowKeyControl from "@/hooks/useArrowKeyControl";
-import usePopupShortCut from "@/hooks/usePopupShortCut";
+import usePopupShortcut from "@/hooks/usePopupShortcut";
 
 import Badge from "@/components/common/icon/Badge";
 import SquareBadge from "@/components/common/icon/SquareBadge";
@@ -28,7 +28,7 @@ export default function App() {
   const { selectedIndex, listRef, handleArrowUpDownKey } =
     useArrowKeyControl(result);
 
-  const { shortcut } = usePopupShortCut();
+  const { shortcut } = usePopupShortcut();
 
   const handleClose = () => window.close();
 
