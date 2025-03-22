@@ -7,6 +7,7 @@ import {
   RemoveMessage,
 } from "@/types/chrome";
 import { ResultType } from "@/types/result";
+import { calcMatchRateResult } from "@/utils/match";
 
 const queryTabs = async (query: string, option: QueryOption) => {
   const response = await actionQuery(query, {
@@ -24,6 +25,7 @@ const queryTabs = async (query: string, option: QueryOption) => {
         active: tab.active || false,
         lastAccessed: tab.lastAccessed || 0,
         windowId: tab.windowId || 0,
+        match: calcMatchRateResult(query, tab.title, tab.url),
       } as Tab;
     })
     .sort((a, b) => b.lastAccessed - a.lastAccessed);

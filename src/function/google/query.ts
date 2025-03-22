@@ -1,6 +1,8 @@
 import { Suggestion, SuggestionOptions } from "@/types/google";
 import { ResultType } from "@/types/result";
 
+import { calcMatchRateResult } from "@/utils/match";
+
 const suggest_url = "https://suggestqueries.google.com/complete/search";
 const search_url = "https://www.google.com/search";
 
@@ -29,6 +31,7 @@ export const querySuggestions = async (
         title,
         url,
         type: ResultType.Google,
+        match: calcMatchRateResult(query, title, url),
       } as Suggestion;
     });
   } catch (error) {
