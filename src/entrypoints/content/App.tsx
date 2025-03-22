@@ -1,6 +1,6 @@
 import "@/assets/global.css";
 import { useState } from "react";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
+import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
 
 import useQueryResult from "@/hooks/query/useQueryResult";
 import useQueryControl from "@/hooks/query/useQueryControl";
