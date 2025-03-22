@@ -9,6 +9,7 @@ import {
 
 import { openContent } from "@/function/chrome/open";
 import { queryTabs, updateTab, removeTab } from "@/function/chrome/tab";
+import { queryHistory } from "@/function/chrome/history";
 
 const {
   OPEN_POPUP,
@@ -17,6 +18,7 @@ const {
   CREATE_TAB,
   UPDATE_TAB,
   REMOVE_TAB,
+  QUERY_HISTORY,
 } = MessageType;
 
 export default defineBackground(() => {
@@ -50,7 +52,7 @@ export default defineBackground(() => {
       chrome.tabs.create({ url });
 
       response({
-        type: "CREATE_TAB",
+        type: CREATE_TAB,
         result: true,
       });
       return true;
@@ -64,7 +66,7 @@ export default defineBackground(() => {
       });
 
       response({
-        type: "UPDATE_TAB",
+        type: UPDATE_TAB,
         result: true,
       });
       return true;
@@ -75,8 +77,19 @@ export default defineBackground(() => {
       removeTab({ tabId });
 
       response({
-        type: "REMOVE_TAB",
+        type: REMOVE_TAB,
         result: true,
+      });
+      return true;
+    }
+
+    if (message.type === QUERY_HISTORY) {
+      const { query } = message as QueryMessage;
+      queryHistory({ query }).then((history) => {
+        response({
+          type: QUERY_HISTORY,
+          result: history,
+        });
       });
       return true;
     }

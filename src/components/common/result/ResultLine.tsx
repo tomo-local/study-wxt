@@ -1,13 +1,14 @@
-import React from "react";
 import TabItem from "@/components/common/result/TabItem";
 import SuggestionItem from "@/components/common/result/SuggestionItem";
-import { Tab } from "@/types/chrome";
+import HistoryItem from "@/components/common/result/HistoryItem";
+
+import { Tab, History } from "@/types/chrome";
 import { Suggestion } from "@/types/google";
-import { ResultType } from "@/types/result";
+import { ResultType, Result } from "@/types/result";
 
 type LineProps = {
   key: number;
-  item: Tab | Suggestion;
+  item: Result;
   isSelected: boolean;
 };
 
@@ -18,7 +19,17 @@ export default function ResultLine({ key, item, isSelected }: LineProps) {
 
   if (item.type === ResultType.Google) {
     return (
-      <SuggestionItem key={key} item={item as Suggestion} isSelected={isSelected} />
+      <SuggestionItem
+        key={key}
+        item={item as Suggestion}
+        isSelected={isSelected}
+      />
+    );
+  }
+
+  if (item.type === ResultType.History) {
+    return (
+      <HistoryItem key={key} item={item as History} isSelected={isSelected} />
     );
   }
 

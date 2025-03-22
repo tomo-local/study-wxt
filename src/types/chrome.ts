@@ -7,6 +7,7 @@ export enum MessageType {
   CREATE_TAB = "CREATE_TAB",
   UPDATE_TAB = "UPDATE_TAB",
   REMOVE_TAB = "REMOVE_TAB",
+  QUERY_HISTORY = "QUERY_HISTORY",
 }
 
 export enum ActionType {
@@ -50,4 +51,19 @@ export interface UpdateMessage {
 export interface RemoveMessage {
   type: MessageType.REMOVE_TAB;
   tabId: number;
+}
+
+export interface History {
+  type: ResultType.History;
+  id: number;
+  title: string;
+  url: string;
+}
+
+export interface QueryHistoryMessage {
+  type: MessageType.QUERY_HISTORY;
+  query: string;
+  startTime?: number;
+  endTime?: number;
+  count?: number;
 }
