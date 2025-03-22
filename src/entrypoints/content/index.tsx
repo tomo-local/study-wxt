@@ -3,7 +3,7 @@ import App from "../content/App";
 import { MessageType } from "@/types/chrome";
 
 export default defineContentScript({
-  matches: ["https://www.google.com/*"],
+  matches: ["https://chromewebstore.google.com/*"],
   cssInjectionMode: "ui",
   async main(ctx) {
     let open = false;
