@@ -2,8 +2,18 @@ import ReactDOM from "react-dom/client";
 import App from "../content/App";
 import { MessageType } from "@/types/chrome";
 
+// devの場合は、https://www.google.com/* のみ, それ以外の場合は<all_urls>にする
+const matchURL =
+  process.env.NODE_ENV === "development"
+    ? "https://www.github.com/*"
+    : "<all_urls>";
+
 export default defineContentScript({
-  matches: ["https://chromewebstore.google.com/*"],
+  matches: [
+    "https://zenn.dev/*",
+    "https://www.google.com/*",
+    "https://www.github.com/*",
+  ],
   cssInjectionMode: "ui",
   async main(ctx) {
     let open = false;

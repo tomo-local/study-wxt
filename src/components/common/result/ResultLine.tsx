@@ -1,8 +1,9 @@
 import TabItem from "@/components/common/result/TabItem";
 import SuggestionItem from "@/components/common/result/SuggestionItem";
 import HistoryItem from "@/components/common/result/HistoryItem";
+import BookmarkItem from "@/components/common/result/BookmarkItem";
 
-import { Tab, History } from "@/types/chrome";
+import { Tab, History, Bookmark } from "@/types/chrome";
 import { Suggestion } from "@/types/google";
 import { ResultType, Result } from "@/types/result";
 
@@ -30,6 +31,12 @@ export default function ResultLine({ key, item, isSelected }: LineProps) {
   if (item.type === ResultType.History) {
     return (
       <HistoryItem key={key} item={item as History} isSelected={isSelected} />
+    );
+  }
+
+  if (item.type === ResultType.Bookmark) {
+    return (
+      <BookmarkItem key={key} item={item as Bookmark} isSelected={isSelected} />
     );
   }
 

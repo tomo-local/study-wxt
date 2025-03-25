@@ -15,7 +15,7 @@ import ResultFooter from "@/components/common/result/ResultFooter";
 import ResultLine from "@/components/common/result/ResultLine";
 
 import { closeContent } from "@/function/chrome/open";
-import { ActionType, MessageType } from "@/types/chrome";
+import { ActionType } from "@/types/chrome";
 import { ResultType } from "@/types/result";
 
 export default function App() {
@@ -40,8 +40,9 @@ export default function App() {
     closeContent(ActionType.runtime);
 
     if (
-      result[selectedIndex].type === ResultType.Google ||
-      result[selectedIndex].type === ResultType.History
+      [ResultType.Bookmark, ResultType.History, ResultType.Bookmark].includes(
+        result[selectedIndex].type
+      )
     ) {
       createTab(result[selectedIndex].url);
       return;
@@ -72,12 +73,6 @@ export default function App() {
 
     e.preventDefault();
     reset();
-  };
-
-  const getCommandShortcut = async () => {
-    const commands = await chrome.commands.getAll();
-
-    return commands.find((command) => command.name === MessageType.OPEN_POPUP);
   };
 
   const handleCommandKeyDown = async (e: React.KeyboardEvent) => {
