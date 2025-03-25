@@ -16,7 +16,7 @@ import ResultLine from "@/components/common/result/ResultLine";
 
 import { closeContent } from "@/function/chrome/open";
 import { ActionType } from "@/types/chrome";
-import { ResultType } from "@/types/result";
+import { ResultType, Result } from "@/types/result";
 
 export default function App() {
   const { query, type, suggestion, setQuery, setType, reset } =
@@ -32,6 +32,23 @@ export default function App() {
 
   const handleClose = () => window.close();
 
+  const onAction = (result: Result) => {
+    if (
+      [ResultType.Bookmark, ResultType.History, ResultType.Bookmark].includes(
+        result.type
+      )
+    ) {
+      createTab(result.url);
+      return;
+    }
+
+    if (result.type === ResultType.Tab) {
+      const { id, windowId } = result;
+      updateTab(id, windowId);
+      return;
+    }
+  };
+
   const handleEnterKey = () => {
     if (!result[selectedIndex] || isComposing) {
       return;
@@ -39,21 +56,7 @@ export default function App() {
 
     closeContent(ActionType.runtime);
 
-    if (
-      [ResultType.Bookmark, ResultType.History, ResultType.Bookmark].includes(
-        result[selectedIndex].type
-      )
-    ) {
-      createTab(result[selectedIndex].url);
-      return;
-    }
-
-    if (result[selectedIndex].type === ResultType.Tab) {
-      // @ts-ignore
-      const { id, windowId } = result[selectedIndex];
-      updateTab(id, windowId);
-      return;
-    }
+    onAction(result[selectedIndex]);
   };
 
   const handleTabKeyDown = (e: React.KeyboardEvent) => {
@@ -136,14 +139,16 @@ export default function App() {
         {result?.length ? (
           <>
             <div className="border-t border-gray-700 border-solid" />
-            <div className="pt-3 pb-2">
+            <div className="pt-3 pb-2 bg-gray-800">
               <ul
-                className="overflow-x-hidden overflow-y-auto hidden-scrollbar max-h-48"
+                className="space-y-1 overflow-x-hidden overflow-y-auto hidden-scrollbar max-h-56"
                 ref={listRef}
               >
                 {result.map((item, index) => (
                   <ResultLine
                     key={item.id}
+                    className="hover:bg-sky-700 hover:opacity-80 hover:cursor-pointer"
+                    onClick={() => onAction(item)}
                     item={item}
                     isSelected={index === selectedIndex}
                   />
