@@ -1,6 +1,8 @@
 import {
   QueryMessage,
+  CreateMessage,
   UpdateMessage,
+  RemoveMessage,
   ActionType,
   MessageType,
 } from "@/types/chrome";
@@ -8,8 +10,14 @@ import {
 import { openContent } from "@/function/chrome/open";
 import { queryTabs, updateTab, removeTab } from "@/function/chrome/tab";
 
-const { OPEN_POPUP, CLOSE_POPUP, QUERY_TAB, UPDATE_TAB, REMOVE_TAB } =
-  MessageType;
+const {
+  OPEN_POPUP,
+  CLOSE_POPUP,
+  QUERY_TAB,
+  CREATE_TAB,
+  UPDATE_TAB,
+  REMOVE_TAB,
+} = MessageType;
 
 export default defineBackground(() => {
   chrome.commands.onCommand.addListener((command) => {
@@ -37,6 +45,17 @@ export default defineBackground(() => {
       return true;
     }
 
+    if (message.type === CREATE_TAB) {
+      const { url } = message as CreateMessage;
+      chrome.tabs.create({ url });
+
+      response({
+        type: "CREATE_TAB",
+        result: true,
+      });
+      return true;
+    }
+
     if (message.type === UPDATE_TAB) {
       const { tabId, windowId } = message as UpdateMessage;
       updateTab({
@@ -52,7 +71,8 @@ export default defineBackground(() => {
     }
 
     if (message.type === REMOVE_TAB) {
-      removeTab(message.tabId);
+      const { tabId } = message as RemoveMessage;
+      removeTab({ tabId });
 
       response({
         type: "REMOVE_TAB",
