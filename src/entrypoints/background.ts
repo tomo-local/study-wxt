@@ -1,11 +1,21 @@
-import { openContent, ActionType, MessageType } from "@/function/chrome";
+import {
+  QueryMessage,
+  UpdateMessage,
+  ActionType,
+  MessageType,
+} from "@/types/chrome";
+
+import { openContent } from "@/function/chrome/open";
+import { queryTabs, updateTab, removeTab } from "@/function/chrome/tab";
+
+const { OPEN_POPUP, CLOSE_POPUP, QUERY_TAB, UPDATE_TAB, REMOVE_TAB } =
+  MessageType;
 
 export default defineBackground(() => {
-  const { OPEN_POPUP, CLOSE_POPUP } = MessageType;
-
   chrome.commands.onCommand.addListener((command) => {
     if (command === OPEN_POPUP) {
       openContent(ActionType.tabs);
+      return true;
     }
   });
 
@@ -15,21 +25,24 @@ export default defineBackground(() => {
       return true;
     }
 
-    if (message.type === "SEARCH_TAB") {
-      console.log("search tab", message);
-      searchTab(message.query, (tabs) => {
+    if (message.type === QUERY_TAB) {
+      const { query, count } = message as QueryMessage;
+
+      queryTabs(query, { count }).then((tabs) => {
         response({
-          type: "SEARCH_TAB",
+          type: QUERY_TAB,
           result: tabs,
         });
       });
-      console.log("search end", message);
       return true;
     }
 
-    if (message.type === "UPDATE_TAB") {
-      console.log("update tab", message);
-      chrome.tabs.update(message.tabId, { active: true });
+    if (message.type === UPDATE_TAB) {
+      const { tabId, windowId } = message as UpdateMessage;
+      updateTab({
+        tabId,
+        windowId,
+      });
 
       response({
         type: "UPDATE_TAB",
@@ -37,35 +50,15 @@ export default defineBackground(() => {
       });
       return true;
     }
+
+    if (message.type === REMOVE_TAB) {
+      removeTab(message.tabId);
+
+      response({
+        type: "REMOVE_TAB",
+        result: true,
+      });
+      return true;
+    }
   });
 });
-
-type Tab = {
-  id: number;
-  title: string;
-  url: string;
-};
-
-const searchTab = (query: string, callback: (tabs: Tab[]) => void) => {
-  chrome.tabs.query({ currentWindow: true }, (_tabs) => {
-    const tabs = _tabs.map((tab) => ({
-      id: tab.id,
-      title: tab.title || "",
-      url: tab.url,
-      icon: tab.favIconUrl || "",
-    })) as Tab[];
-    callback(
-      tabs.filter((tab) => {
-        if (!query) {
-          return true;
-        }
-
-        const lowerQuery = query.toLowerCase();
-
-        const lowerTitle = tab.title.toLowerCase();
-        const lowerUrl = tab.url.toLowerCase();
-        return lowerTitle.includes(lowerQuery) || lowerUrl.includes(lowerQuery);
-      })
-    );
-  });
-};

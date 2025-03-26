@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom/client";
 import App from "../content/App";
-import { MessageType } from "@/function/chrome";
+import { MessageType } from "@/types/chrome";
 
 export default defineContentScript({
   matches: ["https://www.google.com/*"],

@@ -8,11 +8,12 @@ import SearchInput from "@/components/common/SearchInput";
 import { ModalOverlay, ModalContainer } from "@/components/content/Modal";
 import ResultLine from "@/components/common/ResultLine";
 
-import { closeContent, ActionType } from "@/function/chrome";
+import { closeContent } from "@/function/chrome/open";
+import { ActionType } from "@/types/chrome";
 
 export default function App() {
   const [query, setQuery] = useState("");
-  const tabs = useTabSearch(query);
+  const { tabs } = useTabSearch(query);
 
   const handleClose = () => closeContent(ActionType.runtime);
 
@@ -41,10 +42,16 @@ export default function App() {
   const handleEnterKey = () => {
     if (tabs[selectedIndex]) {
       closeContent(ActionType.runtime);
-      chrome.runtime.sendMessage({
-        type: "UPDATE_TAB",
-        tabId: tabs[selectedIndex].id,
-      });
+      chrome.runtime.sendMessage(
+        {
+          type: "UPDATE_TAB",
+          tabId: tabs[selectedIndex].id,
+          windowId: tabs[selectedIndex].windowId,
+        },
+        (res) => {
+          console.log("update tab", res);
+        }
+      );
     }
   };
 
@@ -79,6 +86,12 @@ export default function App() {
             ) : (
               <p className="text-center text-gray-400">No results found</p>
             )}
+          </div>
+          {/* TODO:Footerを作る */}
+          <div className="flex justify-between mt-2">
+            {tabs.length ? (
+              <p className="text-gray-400">{tabs.length} results found</p>
+            ) : null}
           </div>
         </div>
       </ModalContainer>
