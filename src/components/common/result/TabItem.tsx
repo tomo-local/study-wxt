@@ -2,13 +2,7 @@ import ArrowLongRightIcon from "@heroicons/react/16/solid/ArrowLongRightIcon";
 import WindowIcon from "@heroicons/react/16/solid/WindowIcon";
 import ResultItem from "@/components/common/result/ResultItem";
 import SquareIcon from "@/components/common/icon/SquareIcon";
-
-type ListContext = {
-  id: number;
-  title: string;
-  url: string;
-  icon: string;
-};
+import { Tab } from "@/types/chrome";
 
 function ResultLine({
   key,
@@ -16,7 +10,7 @@ function ResultLine({
   isSelected,
 }: {
   key: number;
-  item: ListContext;
+  item: Tab;
   isSelected: boolean;
 }) {
   return (
@@ -48,7 +42,16 @@ function ResultLine({
         }
         isSelected={isSelected}
       >
-        <span className="text-sm font-medium">{item.title}</span>
+        <div className="relative flex-col items-center justify-center inline-block max-w-fit">
+          <div className="text-sm truncate max-w-[224px] md:max-w-md whitespace-nowrap">
+            {item.title}
+          </div>
+          {isSelected ? (
+            <div className="text-xs truncate max-w-[224px] md:max-w-lg whitespace-nowrap">
+              {item.url}
+            </div>
+          ) : null}
+        </div>
       </ResultItem>
     </li>
   );
