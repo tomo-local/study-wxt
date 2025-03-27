@@ -7,6 +7,7 @@ interface SearchInputProps {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onCompositionStart: (e: React.CompositionEvent<HTMLInputElement>) => void;
   onCompositionEnd: (e: React.CompositionEvent<HTMLInputElement>) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 
   // MEMO: カスタムイベントを追加
   onArrowUpDownKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
@@ -22,6 +23,7 @@ export default function SearchInput({
   leftContent,
   rightContent,
   onChange,
+  onKeyDown,
   onCompositionStart,
   onCompositionEnd,
   onArrowUpDownKeyDown,
@@ -65,6 +67,8 @@ export default function SearchInput({
       onBackspaceKeyDown?.(e);
       return;
     }
+
+    onKeyDown?.(e);
   }
 
   return (
@@ -76,7 +80,7 @@ export default function SearchInput({
         type="text"
         value={value}
         placeholder="Search or Enter URL ..."
-        className={`grow px-3 py-2 text-lg rounded-md focus:outline-none focus:ring-2 ${className}`}
+        className={`grow px-3 py-2 text-lg rounded-md focus:outline-none ${className}`}
         autoFocus
         onChange={onChange}
         onCompositionStart={onCompositionStart}

@@ -2,7 +2,11 @@ import { MessageType } from "@/types/chrome";
 
 const actionRuntimeContent = (
   message: MessageType.OPEN_POPUP | MessageType.CLOSE_POPUP
-) => chrome.runtime.sendMessage({ type: message });
+) =>
+  chrome.runtime.sendMessage({ type: message }).catch((e) => {
+    console.log(e);
+    actionPopupContent();
+  });
 
 const actionTabsContent = async (
   message: MessageType.OPEN_POPUP | MessageType.CLOSE_POPUP
@@ -10,9 +14,16 @@ const actionTabsContent = async (
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     const tabId = tabs[0].id;
     if (tabId) {
-      chrome.tabs.sendMessage(tabId, { type: message });
+      return chrome.tabs.sendMessage(tabId, { type: message }).catch((e) => {
+        console.log(e);
+        actionPopupContent();
+      });
     }
   });
+};
+
+const actionPopupContent = async () => {
+  chrome.action.openPopup();
 };
 
 const actionQuery = async (
@@ -36,4 +47,9 @@ const actionQuery = async (
   }) as chrome.tabs.Tab[];
 };
 
-export { actionQuery, actionRuntimeContent, actionTabsContent };
+export {
+  actionQuery,
+  actionRuntimeContent,
+  actionTabsContent,
+  actionPopupContent,
+};

@@ -13,6 +13,7 @@ export enum MessageType {
 export enum ActionType {
   runtime = "runtime",
   tabs = "tabs",
+  popup = "popup",
 }
 
 export interface Tab {

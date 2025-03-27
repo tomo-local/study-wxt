@@ -1,0 +1,173 @@
+import "@/assets/global.css";
+import React, { useState } from "react";
+import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
+
+import useQueryResult from "@/hooks/query/useQueryResult";
+import useQueryControl from "@/hooks/query/useQueryControl";
+import useControlTab from "@/hooks/useControlTab";
+import useArrowKeyControl from "@/hooks/useArrowKeyControl";
+import usePopupShortcut from "@/hooks/usePopupShortcut";
+
+import Badge from "@/components/common/icon/Badge";
+import SquareBadge from "@/components/common/icon/SquareBadge";
+import SearchInput from "@/components/common/SearchInput";
+import ResultFooter from "@/components/common/result/ResultFooter";
+import ResultLine from "@/components/common/result/ResultLine";
+
+import { closeContent } from "@/function/chrome/open";
+import { ActionType, MessageType } from "@/types/chrome";
+import { ResultType } from "@/types/result";
+
+export default function App() {
+  const { query, type, suggestion, setQuery, setType, reset } =
+    useQueryControl();
+  const [isComposing, setIsComposing] = useState(false);
+
+  const { result } = useQueryResult(query, type);
+  const { updateTab, createTab } = useControlTab();
+  const { selectedIndex, listRef, handleArrowUpDownKey } =
+    useArrowKeyControl(result);
+
+  const { shortcut } = usePopupShortcut();
+
+  const handleClose = () => window.close();
+
+  const handleEnterKey = () => {
+    if (!result[selectedIndex] || isComposing) {
+      return;
+    }
+
+    closeContent(ActionType.runtime);
+
+    if (
+      result[selectedIndex].type === ResultType.Google ||
+      result[selectedIndex].type === ResultType.History
+    ) {
+      createTab(result[selectedIndex].url);
+      return;
+    }
+
+    if (result[selectedIndex].type === ResultType.Tab) {
+      // @ts-ignore
+      const { id, windowId } = result[selectedIndex];
+      updateTab(id, windowId);
+      return;
+    }
+  };
+
+  const handleTabKeyDown = (e: React.KeyboardEvent) => {
+    e.preventDefault();
+
+    if (!suggestion || isComposing) {
+      return;
+    }
+
+    setType(suggestion);
+  };
+
+  const handleBackspaceKeyDown = (e: React.KeyboardEvent) => {
+    if (query || (type! == ResultType.All && query)) {
+      return;
+    }
+
+    e.preventDefault();
+    reset();
+  };
+
+  const getCommandShortcut = async () => {
+    const commands = await chrome.commands.getAll();
+
+    return commands.find((command) => command.name === MessageType.OPEN_POPUP);
+  };
+
+  const handleCommandKeyDown = async (e: React.KeyboardEvent) => {
+    if (!shortcut.length) {
+      return;
+    }
+
+    const { key, altKey, ctrlKey, metaKey, shiftKey } = e;
+
+    const pressedKeys = [
+      key.toLowerCase(),
+      altKey ? "alt" : "",
+      ctrlKey ? "control" : "",
+      metaKey ? "meta" : "",
+      shiftKey ? "shift" : "",
+    ]
+      .filter(Boolean)
+      .sort();
+
+    if (
+      shortcut.length === pressedKeys.length &&
+      shortcut.every((key, index) => key === pressedKeys[index])
+    ) {
+      e.preventDefault();
+      handleClose();
+    }
+  };
+
+  return (
+    <div className="min-w-[700px] max-w-min">
+      <div className="px-6 py-2 space-y-2 text-gray-200 bg-gray-800 border-2 border-solid shadow-xl border-sky-500">
+        <SearchInput
+          className="text-gray-200 bg-gray-800 "
+          value={query}
+          leftContent={
+            type === ResultType.All ? (
+              <MagnifyingGlassIcon className="text-gray-400 size-6" />
+            ) : (
+              <Badge className="bg-sky-500" label={type} />
+            )
+          }
+          rightContent={
+            suggestion ? (
+              <div className="flex space-x-1">
+                <div>Change to</div>
+                <div className="font-bold">{suggestion}</div>
+                <SquareBadge className="ml-1 bg-gray-500">Tab</SquareBadge>
+              </div>
+            ) : null
+          }
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleCommandKeyDown}
+          onCompositionStart={() => setIsComposing(true)}
+          onCompositionEnd={() => setIsComposing(false)}
+          onArrowUpDownKeyDown={handleArrowUpDownKey}
+          onEnterKeyDown={handleEnterKey}
+          onTabKeyDown={handleTabKeyDown}
+          onEscapeKeyDown={handleClose}
+          onBackspaceKeyDown={handleBackspaceKeyDown}
+        />
+        {result?.length ? (
+          <>
+            <div className="border-t border-gray-700 border-solid" />
+            <div className="pt-3 pb-2">
+              <ul
+                className="overflow-x-hidden overflow-y-auto hidden-scrollbar max-h-48"
+                ref={listRef}
+              >
+                {result.map((item, index) => (
+                  <ResultLine
+                    key={item.id}
+                    item={item}
+                    isSelected={index === selectedIndex}
+                  />
+                ))}
+              </ul>
+            </div>
+          </>
+        ) : null}
+        <div className="border-t border-gray-700 border-solid" />
+        <ResultFooter>
+          {result.length ? (
+            <p className="text-right text-gray-400">
+              {result.length} results found
+            </p>
+          ) : (
+            <p className="text-right text-gray-400">No results found</p>
+          )}
+        </ResultFooter>
+      </div>
+    </div>
+  );
+}

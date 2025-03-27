@@ -10,7 +10,7 @@ export default defineConfig({
   srcDir: "src",
   outDir: "dist",
   manifest: {
-    name: "Zen Search -dev",
+    name: "Zen Search - dev",
     description: "Search your bookmarks and history",
     version: "1.0.0",
     icons: {
