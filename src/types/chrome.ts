@@ -25,6 +25,7 @@ export interface Tab {
   lastAccessed: number;
   windowId: number;
   currentWindow: boolean;
+  match: number;
 }
 
 export type QueryOption = Pick<chrome.tabs.QueryInfo, "currentWindow"> & {
@@ -58,6 +59,7 @@ export interface History {
   id: number;
   title: string;
   url: string;
+  match: number;
 }
 
 export interface QueryHistoryMessage {

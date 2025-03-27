@@ -9,4 +9,5 @@ export interface Suggestion {
   type: ResultType.Google;
   title: string;
   url: string;
+  match: number;
 }

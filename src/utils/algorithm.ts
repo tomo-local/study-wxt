@@ -20,4 +20,4 @@ function getNgrams(str: string, n: number): string[] {
   return ngrams;
 }
 
-export { ngramSimilarity };
+export { ngramSimilarity, getNgrams };

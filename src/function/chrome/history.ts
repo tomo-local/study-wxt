@@ -1,6 +1,8 @@
 import { History, QueryHistoryMessage } from "@/types/chrome";
 import { ResultType } from "@/types/result";
 
+import { calcMatchRateResult } from "@/utils/match";
+
 type InputQueryHistory = Omit<QueryHistoryMessage, "type">;
 
 const defaultEndTime = new Date().getTime();
@@ -26,6 +28,7 @@ const queryHistory = async ({
     id: createRandomId(),
     title: item.title,
     url: item.url,
+    match: calcMatchRateResult(query, item.title, item.url),
   }));
 
   return history as History[];
