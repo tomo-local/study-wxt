@@ -3,6 +3,8 @@ import {
   CreateMessage,
   UpdateMessage,
   RemoveMessage,
+  QueryBookmarkMessage,
+  QueryHistoryMessage,
   ActionType,
   MessageType,
 } from "@/types/chrome";
@@ -10,6 +12,7 @@ import {
 import { openContent } from "@/function/chrome/open";
 import { queryTabs, updateTab, removeTab } from "@/function/chrome/tab";
 import { queryHistory } from "@/function/chrome/history";
+import { queryBookmarks } from "@/function/chrome/bookmark";
 
 const {
   OPEN_POPUP,
@@ -84,11 +87,22 @@ export default defineBackground(() => {
     }
 
     if (message.type === QUERY_HISTORY) {
-      const { query } = message as QueryMessage;
+      const { query } = message as QueryHistoryMessage;
       queryHistory({ query }).then((history) => {
         response({
           type: QUERY_HISTORY,
           result: history,
+        });
+      });
+      return true;
+    }
+
+    if (message.type === MessageType.QUERY_BOOKMARK) {
+      const { query } = message as QueryBookmarkMessage;
+      queryBookmarks({ query }).then((bookmarks) => {
+        response({
+          type: MessageType.QUERY_BOOKMARK,
+          result: bookmarks,
         });
       });
       return true;

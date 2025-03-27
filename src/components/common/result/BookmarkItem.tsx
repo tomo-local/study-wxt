@@ -1,19 +1,20 @@
 import ArrowLongRightIcon from "@heroicons/react/16/solid/ArrowLongRightIcon";
+import StarIcon from "@heroicons/react/16/solid/StarIcon";
 import CommonItem from "@/components/common/result/CommonItem";
 import SquareIcon from "@/components/common/icon/SquareIcon";
-import { History } from "@/types/chrome";
+import { Bookmark } from "@/types/chrome";
 
 const getFavicon = (url: string) => {
   const urlObj = new URL(url);
   return `https://www.google.com/s2/favicons?domain=${urlObj.hostname}`;
 };
-export default function HistoryItem({
+export default function BookmarkItem({
   key,
   item,
   isSelected,
 }: {
   key: number;
-  item: History;
+  item: Bookmark;
   isSelected: boolean;
 }) {
   return (
@@ -43,7 +44,7 @@ export default function HistoryItem({
       >
         <div className="relative flex-col items-center justify-center inline-block max-w-fit">
           <div className="text-sm truncate max-w-[224px] md:max-w-md whitespace-nowrap">
-            {item.title}
+            {item.title || item.url}
           </div>
         </div>
       </CommonItem>

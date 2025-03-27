@@ -20,15 +20,19 @@ export default function usePopupShortCut() {
 
     return commands.find((command) => command.name === MessageType.OPEN_POPUP);
   };
+
   useEffect(() => {
     getCommandShortcut().then((command) => {
       if (!command) {
         return;
       }
-      const normalizedShortcut = command?.shortcut?.split("").map((char) => {
-        const key = keyMap[char] || char;
-        return key.toLowerCase();
-      }).sort()
+      const normalizedShortcut = command?.shortcut
+        ?.split("")
+        .map((char) => {
+          const key = keyMap[char] || char;
+          return key.toLowerCase();
+        })
+        .sort();
 
       setShortcut(normalizedShortcut ?? []);
     });
