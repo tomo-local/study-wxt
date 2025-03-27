@@ -1,61 +1,91 @@
 interface SearchInputProps {
   className?: string;
+  value: string;
   leftContent?: React.ReactNode;
   rightContent?: React.ReactNode;
 
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onCompositionStart: (e: React.CompositionEvent<HTMLInputElement>) => void;
+  onCompositionEnd: (e: React.CompositionEvent<HTMLInputElement>) => void;
 
   // MEMO: カスタムイベントを追加
   onArrowUpDownKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   onEscapeKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   onTabKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   onEnterKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  onBackspaceKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export default function SearchInput({
   className,
+  value,
   leftContent,
   rightContent,
   onChange,
+  onCompositionStart,
+  onCompositionEnd,
   onArrowUpDownKeyDown,
   onEscapeKeyDown,
   onTabKeyDown,
   onEnterKeyDown,
+  onBackspaceKeyDown,
 }: SearchInputProps) {
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "/") {
+      e.preventDefault();
+      onChange?.({ target: { value: value + "/" } } as any);
+      return;
+    }
+
     if (e.key === "Escape") {
       e.preventDefault();
       onEscapeKeyDown?.(e);
+      return;
     }
 
-    if (e.key.includes("Arrow")) {
+    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
       e.preventDefault();
       onArrowUpDownKeyDown?.(e);
+      return;
     }
 
     if (e.key === "Tab") {
       e.preventDefault();
       onTabKeyDown?.(e);
+      return;
     }
 
     if (e.key === "Enter") {
       e.preventDefault();
       onEnterKeyDown?.(e);
+      return;
+    }
+
+    if (e.key === "Backspace") {
+      onBackspaceKeyDown?.(e);
+      return;
     }
   }
 
   return (
-    <div className="flex items-center space-x-2">
-      {leftContent && <div className="flex-none">{leftContent}</div>}
+    <div className="flex items-center">
+      {leftContent && (
+        <div className="flex items-center min-w-8">{leftContent}</div>
+      )}
       <input
         type="text"
+        value={value}
         placeholder="Search or Enter URL ..."
-        className={`w-full px-3 py-2 text-lg rounded-md focus:outline-none focus:ring-2 ${className}`}
+        className={`grow px-3 py-2 text-lg rounded-md focus:outline-none focus:ring-2 ${className}`}
         autoFocus
         onChange={onChange}
+        onCompositionStart={onCompositionStart}
+        onCompositionEnd={onCompositionEnd}
         onKeyDown={handleKeyDown}
       />
-      {rightContent && <div className="flex-none">{rightContent}</div>}
+      {rightContent && (
+        <div className="flex items-center min-w-8">{rightContent}</div>
+      )}
     </div>
   );
 }
