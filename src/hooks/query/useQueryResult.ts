@@ -4,11 +4,12 @@ import useQuerySuggestions from "@/hooks/query/useQuerySuggestions";
 
 import { Tab } from "@/types/chrome";
 import { Suggestion } from "@/types/google";
+import { ResultType } from "@/types/result";
 
-export default function useResult(query: string) {
+export default function useResult(query: string, type: ResultType) {
   const [result, setResult] = useState<(Tab | Suggestion)[]>([]);
-  const { tabs } = useQueryTabs(query);
-  const { suggestions } = useQuerySuggestions(query, tabs.length);
+  const { tabs } = useQueryTabs(query, type);
+  const { suggestions } = useQuerySuggestions(query, type, tabs.length);
 
   // 文字マッチング率が高い順に並び替える関数を作成
   const sortResult = (a: Tab | Suggestion, b: Tab | Suggestion) => {
