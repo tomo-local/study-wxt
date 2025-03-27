@@ -37,12 +37,16 @@ export default function App() {
 
     closeContent(ActionType.runtime);
 
-    if (result[selectedIndex].type === ResultType.Google) {
+    if (
+      result[selectedIndex].type === ResultType.Google ||
+      result[selectedIndex].type === ResultType.History
+    ) {
       createTab(result[selectedIndex].url);
       return;
     }
 
     if (result[selectedIndex].type === ResultType.Tab) {
+      // @ts-ignore
       const { id, windowId } = result[selectedIndex];
       updateTab(id, windowId);
       return;

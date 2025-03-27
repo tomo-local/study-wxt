@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
 import useQueryTabs from "@/hooks/query/useQueryTabs";
 import useQuerySuggestions from "@/hooks/query/useQuerySuggestions";
+import useQueryHistories from "./useQueryHistories";
 
-import { Tab } from "@/types/chrome";
-import { Suggestion } from "@/types/google";
-import { ResultType } from "@/types/result";
+import { ResultType, Result } from "@/types/result";
 
 export default function useResult(query: string, type: ResultType) {
-  const [result, setResult] = useState<(Tab | Suggestion)[]>([]);
+  const [result, setResult] = useState<Result[]>([]);
   const { tabs } = useQueryTabs(query, type);
   const { suggestions } = useQuerySuggestions(query, type, tabs.length);
+  const { histories } = useQueryHistories(query, type, tabs.length);
 
-  // 文字マッチング率が高い順に並び替える関数を作成
-  const sortResult = (a: Tab | Suggestion, b: Tab | Suggestion) => {
+  const sortResult = (a: Result, b: Result) => {
     if (a.title.includes(query) && !b.title.includes(query)) {
       return -1;
     }
@@ -23,9 +22,9 @@ export default function useResult(query: string, type: ResultType) {
   };
 
   useEffect(() => {
-    const result = [...tabs, ...suggestions].sort(sortResult);
+    const result = [...tabs, ...suggestions, ...histories].sort(sortResult);
     setResult(result);
-  }, [tabs, suggestions]);
+  }, [tabs, suggestions, histories]);
 
   return {
     result,
