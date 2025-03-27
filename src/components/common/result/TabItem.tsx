@@ -20,21 +20,21 @@ export default function TabItem({
           isSelected && "bg-sky-500"
         } `}
         leftContent={
-          <SquareIcon className={isSelected ? "bg-gray-200" : ""}>
+          <SquareIcon className={isSelected ? "bg-gray-300" : ""}>
             {item.icon ? (
-              <img src={item.icon} alt="favicon" className="size-4" />
+              <img src={item.icon} alt="favicon" className="size-5" />
             ) : (
-              <WindowIcon className="text-gray-400 size-4" />
+              <WindowIcon className="text-gray-500 size-5" />
             )}
           </SquareIcon>
         }
         rightContent={
           <div className="flex items-center space-x-2">
             <span className="text-xs text-gray-300">Go to Tab</span>
-            <SquareIcon className={isSelected ? "bg-gray-200" : ""}>
+            <SquareIcon className={isSelected ? "bg-gray-300" : ""}>
               <ArrowLongRightIcon
-                className={`size-4 ${
-                  isSelected ? "text-gray-400" : "text-gray-200"
+                className={`size-5 ${
+                  isSelected ? "text-gray-500" : "text-gray-300"
                 }`}
               />
             </SquareIcon>

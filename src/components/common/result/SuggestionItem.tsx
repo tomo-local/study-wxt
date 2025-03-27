@@ -1,5 +1,5 @@
 import ArrowLongRightIcon from "@heroicons/react/16/solid/ArrowLongRightIcon";
-import WindowIcon from "@heroicons/react/16/solid/WindowIcon";
+import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
 import CommonItem from "@/components/common/result/CommonItem";
 import SquareIcon from "@/components/common/icon/SquareIcon";
 import { Suggestion } from "@/types/google";
@@ -20,17 +20,17 @@ export default function SuggestionItem({
           isSelected && "bg-sky-500"
         } `}
         leftContent={
-          <SquareIcon className={isSelected ? "bg-gray-200" : ""}>
-            <WindowIcon className="text-gray-400 size-5" />
+          <SquareIcon className={isSelected ? "bg-gray-300" : ""}>
+            <MagnifyingGlassIcon className="text-gray-500 size-5" />
           </SquareIcon>
         }
         rightContent={
           <div className="flex items-center space-x-2">
             <span className="text-xs text-gray-300">Go to Search</span>
-            <SquareIcon className={isSelected ? "bg-gray-200" : ""}>
+            <SquareIcon className={isSelected ? "bg-gray-300" : ""}>
               <ArrowLongRightIcon
                 className={`size-5 ${
-                  isSelected ? "text-gray-400" : "text-gray-200"
+                  isSelected ? "text-gray-500" : "text-gray-300"
                 }`}
               />
             </SquareIcon>
